@@ -16,6 +16,21 @@ export default defineType({
       title: 'Опис категорії',
       type: 'blockContent',
     }),
+    defineField({
+      name: 'image',
+      title: 'Зображення категорії',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      validation: rule => rule.required().error('Це поле обов’язкове'),
+    }),
+    defineField({
+      name: 'active',
+      title: 'Використовувати у фільтрах',
+      type: 'boolean',
+      initialValue: true
+    })
   ],
   preview: {
     select: {

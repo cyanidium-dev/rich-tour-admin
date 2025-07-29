@@ -12,6 +12,26 @@ export default defineType({
       validation: Rule => Rule.required().error('Це поле обов’язкове'),
     }),
     defineField({
+        name: 'price',
+        title: 'Ціна',
+        type: 'number',
+        validation: Rule => Rule
+          .required().error('Це поле обов’язкове')
+          .min(0).error('Ціна не може бути від’ємною')
+      }),
+    defineField({
+      name: 'promotion',
+      title: 'Акція',
+      type: 'boolean',
+      initialValue: false
+    }),
+    defineField({
+      name: 'earlyBooking',
+      title: 'Раннє бронювання',
+      type: 'boolean',
+      initialValue: false
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
