@@ -49,9 +49,7 @@ export default defineType({
       name: 'description',
       title: 'Короткий опис (до 210 символів)',
       type: 'text',
-      validation: Rule => Rule
-        .required().error('Це поле обов’язкове')
-        .max(210).warning('Максимум 210 символів')
+      validation: Rule => Rule.required().error('Це поле обов’язкове').max(210).error('Максимум 210 символів')
     }),
     defineField({
       name: 'duration',
