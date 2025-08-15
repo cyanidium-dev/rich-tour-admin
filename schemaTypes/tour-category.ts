@@ -30,6 +30,12 @@ export default defineType({
       title: 'Використовувати у фільтрах',
       type: 'boolean',
       initialValue: true
+    }),
+    defineField({
+      name: 'main',
+      title: 'Категорія для вітрини',
+      type: 'boolean',
+      initialValue: true
     })
   ],
   preview: {
