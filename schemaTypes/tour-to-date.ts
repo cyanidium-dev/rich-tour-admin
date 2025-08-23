@@ -26,12 +26,6 @@ export default defineType({
       initialValue: false
     }),
     defineField({
-      name: 'earlyBooking',
-      title: 'Раннє бронювання',
-      type: 'boolean',
-      initialValue: false
-    }),
-    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

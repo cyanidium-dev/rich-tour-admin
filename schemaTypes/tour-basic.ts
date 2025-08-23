@@ -37,6 +37,12 @@ export default defineType({
       validation: Rule => Rule.required().min(1).error('Оберіть хоча б одну категорію')
     },
     defineField({
+      name: 'earlyBooking',
+      title: 'Раннє бронювання',
+      type: 'boolean',
+      initialValue: false
+    }),
+    defineField({
       name: 'image',
       title: 'Зображення базового туру',
       type: 'image',
