@@ -26,12 +26,6 @@ export default defineType({
       initialValue: false
     }),
     defineField({
-      name: 'earlyBooking',
-      title: 'Раннє бронювання',
-      type: 'boolean',
-      initialValue: false
-    }),
-    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -218,36 +212,6 @@ export default defineType({
         }
       ]
     }),
-    // defineField({
-    //   name: 'category',
-    //   title: 'Категорія туру',
-    //   type: 'reference',
-    //   to: {type: 'tour-category'},
-    //   validation: Rule => Rule.required().error('Оберіть категорію')
-    // }),
-    // defineField({
-    //   name: 'image',
-    //   title: 'Зображення базового туру',
-    //   type: 'image',
-    //   options: {
-    //     hotspot: true,
-    //   },
-    //   validation: rule => rule.required().error('Це поле обов’язкове'),
-    // }),
-    // defineField({
-    //   name: 'description',
-    //   title: 'Короткий опис (до 210 символів)',
-    //   type: 'text',
-    //   validation: Rule => Rule
-    //     .required().error('Це поле обов’язкове')
-    //     .max(210).warning('Максимум 210 символів')
-    // }),
-    // defineField({
-    //   name: 'duration',
-    //   title: 'Тривалість туру у днях',
-    //   type: 'number',
-    //   validation: Rule => Rule.required().error('Це поле обов’язкове'),
-    // }),
   ],
   preview: {
     select: {
