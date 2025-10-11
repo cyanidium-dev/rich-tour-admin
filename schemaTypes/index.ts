@@ -10,5 +10,7 @@ import contact from './contact'
 import tourCategory from './tour-category'
 import tourBasic from './tour-basic'
 import tourToDate from './tour-to-date'
+import currency from './currency'
+import country from './country'
 
-export const schemaTypes = [ tourCategory, tourBasic, tourToDate, review, faq, team, doc, contact, blockContent]
+export const schemaTypes = [ country, currency, tourCategory, tourBasic, tourToDate, review, faq, team, doc, contact, blockContent]

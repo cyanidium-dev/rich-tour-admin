@@ -84,12 +84,11 @@ export default defineType({
             : 'Дата завершення не може бути раніше за дату початку'
         })
     },
-
     {
       name: 'programUpload',
       title: 'Програма туру',
       type: 'file',
-      validation: Rule => Rule.required().error('Завантажте програму')
+      // validation: Rule => Rule.required().error('Завантажте програму')
     },
     {
       name: 'gallery',

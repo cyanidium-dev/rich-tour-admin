@@ -36,6 +36,21 @@ export default defineType({
       },
       validation: Rule => Rule.required().min(1).error('Оберіть хоча б одну категорію')
     },
+    {
+      name: 'countries',
+      title: 'Країни, через які проходить тур',
+      type: 'array',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'country' }]
+        }
+      ],
+      options: {
+        layout: 'checkbox'
+      },
+      validation: Rule => Rule.required().min(1).error('Оберіть хоча б одну країну')
+    },
     defineField({
       name: 'image',
       title: 'Зображення базового туру',
