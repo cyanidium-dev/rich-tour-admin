@@ -148,19 +148,19 @@ export default defineType({
               title: 'Опис екскурсії',
               type: 'blockContent'
             },
-            {
-              name: 'gallery',
-              title: 'Зображення ескурсії',
-              type: 'array',
-              of: [
-                {
-                  type: 'image',
-                  options: {
-                    hotspot: true
-                  }
-                }
-              ],
-            },
+            // {
+            //   name: 'gallery',
+            //   title: 'Зображення ескурсії',
+            //   type: 'array',
+            //   of: [
+            //     {
+            //       type: 'image',
+            //       options: {
+            //         hotspot: true
+            //       }
+            //     }
+            //   ],
+            // },
           ]
         }
       ]
