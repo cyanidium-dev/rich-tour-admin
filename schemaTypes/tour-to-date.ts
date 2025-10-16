@@ -12,6 +12,12 @@ export default defineType({
       validation: Rule => Rule.required().error('Це поле обов’язкове'),
     }),
     defineField({
+      name: 'crmNumber',
+      title: 'Номер процесу у CRM',
+      type: 'string',
+      // validation: Rule => Rule.required().error('Це поле обов’язкове'),
+    }),
+    defineField({
         name: 'price',
         title: 'Ціна',
         type: 'number',
