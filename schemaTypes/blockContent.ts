@@ -18,10 +18,6 @@ export default defineType({
     defineArrayMember({
       title: 'Block',
       type: 'block',
-      // Styles let you set what your user can mark up blocks with. These
-      // correspond with HTML tags, but you can set any title or value
-      // you want and decide how you want to deal with it where you want to
-      // use your content.
       styles: [
         {title: 'Normal', value: 'normal'},
         {title: 'H1', value: 'h1'},
