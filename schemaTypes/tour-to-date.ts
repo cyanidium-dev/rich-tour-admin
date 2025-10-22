@@ -32,13 +32,13 @@ export default defineType({
       initialValue: false
     }),
     defineField({
-      name: 'guaranteedDeparture',
+      name: 'guaranteed',
       title: 'Гарантований виїзд',
       type: 'boolean',
       initialValue: true
     }),
     defineField({
-      name: 'hotTour',
+      name: 'hot',
       title: 'Гарячий тур',
       type: 'boolean',
       initialValue: false
