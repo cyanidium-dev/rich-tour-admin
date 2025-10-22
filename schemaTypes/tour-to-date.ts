@@ -55,10 +55,10 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Виїзд під запит', value: 'on_request' },
+          { title: 'Виїзд під запит', value: 'onRequest' },
           { title: 'Місця є', value: 'available' },
-          { title: 'Мало місць', value: 'few' },
-          { title: 'Місць немає', value: 'none' },
+          { title: 'Мало місць', value: 'fewSeats' },
+          { title: 'Місць немає', value: 'noSeats' },
         ],
         layout: 'dropdown',
       },
