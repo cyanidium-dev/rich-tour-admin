@@ -49,6 +49,21 @@ export default defineType({
       type: 'boolean',
       initialValue: false
     }),
+    {
+      name: 'availability',
+      title: 'Наявність місць',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Виїзд під запит', value: 'on_request' },
+          { title: 'Місця є', value: 'available' },
+          { title: 'Мало місць', value: 'few' },
+          { title: 'Місць немає', value: 'none' },
+        ],
+        layout: 'dropdown',
+      },
+      initialValue: 'available', // 👈 значение по умолчанию
+    },
     defineField({
       name: 'slug',
       title: 'Slug',
