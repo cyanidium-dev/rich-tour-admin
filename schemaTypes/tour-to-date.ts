@@ -32,6 +32,24 @@ export default defineType({
       initialValue: false
     }),
     defineField({
+      name: 'guaranteedDeparture',
+      title: 'Гарантований виїзд',
+      type: 'boolean',
+      initialValue: true
+    }),
+    defineField({
+      name: 'hotTour',
+      title: 'Гарячий тур',
+      type: 'boolean',
+      initialValue: false
+    }),
+    defineField({
+      name: 'discount',
+      title: 'Діє знижка',
+      type: 'boolean',
+      initialValue: false
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
