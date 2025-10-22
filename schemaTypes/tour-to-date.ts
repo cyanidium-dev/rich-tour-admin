@@ -62,7 +62,7 @@ export default defineType({
         ],
         layout: 'dropdown',
       },
-      initialValue: 'available', // 👈 значение по умолчанию
+      initialValue: 'available', 
     },
     defineField({
       name: 'slug',
