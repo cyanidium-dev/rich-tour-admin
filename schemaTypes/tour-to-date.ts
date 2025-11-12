@@ -25,6 +25,13 @@ export default defineType({
           .required().error('Це поле обов’язкове')
           .min(0).error('Ціна не може бути від’ємною')
       }),
+      defineField({
+        name: 'agentPrice',
+        title: 'Ціна для агента',
+        type: 'number',
+        validation: Rule => Rule
+          .min(0).error('Ціна не може бути від’ємною')
+      }),
     defineField({
       name: 'promotion',
       title: 'Акція',
@@ -119,7 +126,7 @@ export default defineType({
     },
     {
       name: 'programUpload',
-      title: 'Програма туру',
+      title: 'Програма туру в pdf',
       type: 'file',
       // validation: Rule => Rule.required().error('Завантажте програму')
     },
@@ -200,6 +207,52 @@ export default defineType({
             //     }
             //   ],
             // },
+          ]
+        }
+      ]
+    }),
+    defineField({
+      name: 'hotels',
+      title: 'Готелі туру',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          title: 'Секція',
+          fields: [
+            {
+              name: 'title',
+              title: 'Назва готелю',
+              type: 'string'
+            },
+            {
+              name: 'stars',
+              title: 'Зірковість готелю',
+              type: 'number'
+            },
+            {
+              name: 'price',
+              title: 'Вартісь оренди (від)',
+              type: 'number'
+            },
+            {
+              name: 'content',
+              title: 'Опис готелю',
+              type: 'blockContent'
+            },
+            {
+              name: 'gallery',
+              title: 'Зображення готелю',
+              type: 'array',
+              of: [
+                {
+                  type: 'image',
+                  options: {
+                    hotspot: true
+                  }
+                }
+              ],
+            },
           ]
         }
       ]
