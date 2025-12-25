@@ -32,6 +32,33 @@ export default defineType({
         validation: Rule => Rule
           .min(0).error('Ціна не може бути від’ємною')
       }),
+    {
+      name: 'agencyCommission',
+      title: 'Комісія агента',
+      type: 'object',
+      description: 'Якщо обраний відсоток - число має бути від 0 до 100',
+      fields: [
+        {
+          name: 'value',
+          title: 'Значення',
+          type: 'number',
+          // validation: Rule => Rule.required().min(0),
+        },
+        {
+          name: 'type',
+          title: 'Тип',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Фіксована сума', value: 'fixed' },
+              { title: 'Відсоток', value: 'percent' },
+            ],
+            layout: 'radio',
+          },
+          // validation: Rule => Rule.required(),
+        },
+      ],
+    },
     defineField({
       name: 'promotion',
       title: 'Акція',
@@ -69,7 +96,7 @@ export default defineType({
         ],
         layout: 'dropdown',
       },
-      initialValue: 'available', 
+      initialValue: 'available',
     },
     defineField({
       name: 'slug',
@@ -260,6 +287,11 @@ export default defineType({
     defineField({
       name: 'route',
       title: 'Маршрут туру (у вигляді списку)',
+      type: 'blockContent',
+    }),
+    defineField({
+      name: 'additionalConditions',
+      title: 'Додаткові умови',
       type: 'blockContent',
     }),
     defineField({
