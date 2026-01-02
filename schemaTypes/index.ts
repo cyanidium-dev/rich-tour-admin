@@ -13,5 +13,6 @@ import tourToDate from './tour-to-date'
 import currency from './currency'
 import country from './country'
 import agencyUser from './agencyUser'
+import agentUser from './agentUser'
 
-export const schemaTypes = [ agencyUser, country, currency, tourCategory, tourBasic, tourToDate, review, faq, team, doc, contact, blockContent]
+export const schemaTypes = [ agentUser, agencyUser, country, currency, tourCategory, tourBasic, tourToDate, review, faq, team, doc, contact, blockContent]

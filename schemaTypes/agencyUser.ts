@@ -3,7 +3,7 @@ import PasswordHashInput from '../components/PasswordHashInput'
 
 const agencyUser = defineType({
   name: 'agencyUser',
-  title: 'Agency User',
+  title: 'Агенції',
   type: 'document',
 
   fields: [

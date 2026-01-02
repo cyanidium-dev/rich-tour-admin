@@ -263,8 +263,13 @@ export default defineType({
               type: 'number'
             },
             {
-              name: 'content',
-              title: 'Опис готелю',
+              name: 'shortDescription',
+              title: 'Короткий опис готелю',
+              type: 'blockContent'
+            },
+            {
+              name: 'fullDescription',
+              title: 'Детальний опис готелю',
               type: 'blockContent'
             },
             {
