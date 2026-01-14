@@ -61,7 +61,7 @@ const agencyUser = defineType({
       validation: Rule =>
         Rule.required().custom((value) => {
           if (!value) return true
-          return /^\d{8}$/.test(value)
+          return /^\d{8,10}$/.test(value)
             ? true
             : 'ЄДРПОУ має містити рівно 8 цифр'
         }),
