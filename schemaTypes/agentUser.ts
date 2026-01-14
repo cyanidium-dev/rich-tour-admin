@@ -16,7 +16,26 @@ const agentUser = defineType({
       type: 'string',
       validation: Rule => Rule.required().email(),
     }),
-
+    {
+      name: 'agency',
+      title: 'Агенція, до якої належить агент',
+      type: 'array',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'agencyUser' }]
+        }
+      ],
+      options: {
+        layout: 'checkbox'
+      },
+    },
+    defineField({
+      name: 'agencyCrmId',
+      title: 'Agency CRM ID',
+      type: 'string',
+      readOnly: true,
+    }),
     // ─────────────────────
     // 🏢 Назви компанії
     // ─────────────────────
@@ -82,11 +101,7 @@ const agentUser = defineType({
     defineField({
       name: 'site',
       title: 'Сайт',
-      type: 'url',
-      validation: Rule => Rule.uri({
-        allowRelative: false,
-        scheme: ['http', 'https'],
-      }),
+      type: 'string',
     }),
 
     // ─────────────────────
@@ -117,6 +132,15 @@ const agentUser = defineType({
         input: PasswordHashInput,
       },
       validation: Rule => Rule.required(),
+    }),
+    // ─────────────────────
+    // 🔒 id из CRM
+    // ─────────────────────
+    defineField({
+      name: 'crmId',
+      title: 'CRM ID',
+      type: 'string',
+      readOnly: true,
     }),
   ],
 

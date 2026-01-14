@@ -107,6 +107,15 @@ const agencyUser = defineType({
       type: 'string',
       validation: Rule => Rule.required().email(),
     }),
+            // ─────────────────────
+    // 🔒 id из CRM
+    // ─────────────────────
+    defineField({
+      name: 'crmId',
+      title: 'CRM ID',
+      type: 'string',
+      readOnly: true,
+    }),
   ],
 
   // ─────────────────────
