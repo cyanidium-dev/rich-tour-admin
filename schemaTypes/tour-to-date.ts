@@ -250,44 +250,55 @@ export default defineType({
             {
               name: 'title',
               title: 'Назва готелю',
-              type: 'string'
+              type: 'string',
+              validation: Rule => Rule.required(),
             },
             {
               name: 'stars',
               title: 'Зірковість готелю',
-              type: 'number'
+              type: 'number',
+              validation: Rule => Rule.required().min(1).max(5),
             },
             {
               name: 'price',
-              title: 'Вартісь оренди (від)',
-              type: 'number'
+              title: 'Вартість оренди (від)',
+              type: 'number',
+              validation: Rule => Rule.required().positive(),
             },
             {
               name: 'shortDescription',
               title: 'Короткий опис готелю',
-              type: 'blockContent'
+              type: 'blockContent',
+              validation: Rule =>
+                Rule.custom(value =>
+                  value && value.length > 0
+                    ? true
+                    : 'Поле обовʼязкове'
+                ),
             },
             {
               name: 'fullDescription',
               title: 'Детальний опис готелю',
-              type: 'blockContent'
+              type: 'blockContent',
+              validation: Rule =>
+                Rule.custom(value =>
+                  value && value.length > 0
+                    ? true
+                    : 'Поле обовʼязкове'
+                ),
             },
             {
               name: 'gallery',
               title: 'Зображення готелю',
               type: 'array',
-              of: [
-                {
-                  type: 'image',
-                  options: {
-                    hotspot: true
-                  }
-                }
-              ],
+              of: [{ type: 'image', options: { hotspot: true } }],
+              validation: Rule =>
+                Rule.required().min(1).error('Додайте хоча б одне зображення'),
             },
-          ]
-        }
-      ]
+          ],
+          validation: Rule => Rule.required(),
+        },
+      ],
     }),
     defineField({
       name: 'route',
