@@ -62,10 +62,21 @@ const agentUser = defineType({
       type: 'string',
       validation: Rule =>
         Rule.required().custom((value) => {
-          if (!value) return true
-          return /^\+?[0-9\s\-()]{10,15}$/.test(value)
-            ? true
-            : 'Некоректний номер телефону'
+          if (typeof value !== "string") {
+            return "Некоректний номер телефону"
+          }
+    
+          // Убираем ВСЁ, кроме цифр
+          const digits = value.replace(/[^\d]/g, "")
+    
+          // Допустимые варианты:
+          // 10 цифр (0997875037)
+          // 12 цифр (380997875037)
+          if (digits.length === 10 || digits.length === 12) {
+            return true
+          }
+    
+          return "Номер телефону має містити 10 або 12 цифр"
         }),
     }),
 
