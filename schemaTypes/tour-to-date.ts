@@ -1,4 +1,6 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType} from 'sanity';
+
+import { isBlockContentRequired } from './functions';
 
 export default defineType({
   name: 'tour-to-date',
@@ -9,29 +11,33 @@ export default defineType({
       name: 'title',
       title: 'Назва туру',
       type: 'string',
-      validation: Rule => Rule.required().error('Це поле обов’язкове'),
+      validation: (Rule) => Rule.required().error('Це поле обов’язкове'),
     }),
     defineField({
       name: 'crmNumber',
       title: 'Номер процесу у CRM',
       type: 'string',
-      // validation: Rule => Rule.required().error('Це поле обов’язкове'),
+      validation: (Rule) =>
+        Rule.required()
+          .regex(/^\d+$/, {
+            name: 'digits',
+            invert: false,
+          })
+          .error('Поле обов’язкове та має містити тільки цифри'),
     }),
     defineField({
-        name: 'price',
-        title: 'Ціна',
-        type: 'number',
-        validation: Rule => Rule
-          .required().error('Це поле обов’язкове')
-          .min(0).error('Ціна не може бути від’ємною')
-      }),
-      defineField({
-        name: 'agentPrice',
-        title: 'Ціна для агента',
-        type: 'number',
-        validation: Rule => Rule
-          .min(0).error('Ціна не може бути від’ємною')
-      }),
+      name: 'price',
+      title: 'Ціна',
+      type: 'number',
+      validation: (Rule) =>
+        Rule.required().error('Це поле обов’язкове').min(0).error('Ціна не може бути від’ємною'),
+    }),
+    defineField({
+      name: 'agentPrice',
+      title: 'Ціна для агента',
+      type: 'number',
+      validation: (Rule) => Rule.min(0).error('Ціна не може бути від’ємною'),
+    }),
     {
       name: 'agencyCommission',
       title: 'Комісія агента',
@@ -50,8 +56,8 @@ export default defineType({
           type: 'string',
           options: {
             list: [
-              { title: 'Фіксована сума', value: 'fixed' },
-              { title: 'Відсоток', value: 'percent' },
+              {title: 'Фіксована сума', value: 'fixed'},
+              {title: 'Відсоток', value: 'percent'},
             ],
             layout: 'radio',
           },
@@ -63,25 +69,25 @@ export default defineType({
       name: 'promotion',
       title: 'Акція',
       type: 'boolean',
-      initialValue: false
+      initialValue: false,
     }),
     defineField({
       name: 'guaranteed',
       title: 'Гарантований виїзд',
       type: 'boolean',
-      initialValue: true
+      initialValue: true,
     }),
     defineField({
       name: 'hot',
       title: 'Гарячий тур',
       type: 'boolean',
-      initialValue: false
+      initialValue: false,
     }),
     defineField({
       name: 'discount',
       title: 'Діє знижка',
       type: 'boolean',
-      initialValue: false
+      initialValue: false,
     }),
     {
       name: 'availability',
@@ -89,10 +95,10 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Виїзд під запит', value: 'onRequest' },
-          { title: 'Місця є', value: 'available' },
-          { title: 'Мало місць', value: 'fewSeats' },
-          { title: 'Місць немає', value: 'noSeats' },
+          {title: 'Виїзд під запит', value: 'onRequest'},
+          {title: 'Місця є', value: 'available'},
+          {title: 'Мало місць', value: 'fewSeats'},
+          {title: 'Місць немає', value: 'noSeats'},
         ],
         layout: 'dropdown',
       },
@@ -106,14 +112,14 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: Rule => Rule.required().error('Це поле обов’язкове'),
+      validation: (Rule) => Rule.required().error('Це поле обов’язкове'),
     }),
     defineField({
       name: 'basic',
       title: 'Базовий тур',
       type: 'reference',
       to: {type: 'tour-basic'},
-      validation: Rule => Rule.required().error('Оберіть базовий тур')
+      validation: (Rule) => Rule.required().error('Оберіть базовий тур'),
     }),
     {
       name: 'dateRange',
@@ -125,22 +131,22 @@ export default defineType({
           title: 'Дата від',
           type: 'date',
           options: {
-            dateFormat: 'YYYY-MM-DD'
+            dateFormat: 'YYYY-MM-DD',
           },
-          validation: Rule => Rule.required().error('Оберіть дату початку')
+          validation: (Rule) => Rule.required().error('Оберіть дату початку'),
         },
         {
           name: 'endDate',
           title: 'Дата до',
           type: 'date',
           options: {
-            dateFormat: 'YYYY-MM-DD'
+            dateFormat: 'YYYY-MM-DD',
           },
-          validation: Rule => Rule.required().error('Оберіть дату завершення')
-        }
+          validation: (Rule) => Rule.required().error('Оберіть дату завершення'),
+        },
       ],
-      validation: Rule =>
-        Rule.custom(dateRange => {
+      validation: (Rule) =>
+        Rule.custom((dateRange) => {
           //@ts-expect-error
           if (!dateRange?.startDate || !dateRange?.endDate) {
             return true
@@ -149,7 +155,7 @@ export default defineType({
           return dateRange.endDate >= dateRange.startDate
             ? true
             : 'Дата завершення не може бути раніше за дату початку'
-        })
+        }),
     },
     {
       name: 'programUpload',
@@ -165,14 +171,11 @@ export default defineType({
         {
           type: 'image',
           options: {
-            hotspot: true
-          }
-        }
+            hotspot: true,
+          },
+        },
       ],
-      validation: Rule => Rule
-        .required()
-        .min(5)
-        .error('Додайте щонайменше 5 зображень')
+      validation: (Rule) => Rule.required().min(5).error('Додайте щонайменше 5 зображень'),
     },
     defineField({
       name: 'benefits',
@@ -191,16 +194,16 @@ export default defineType({
             {
               name: 'title',
               title: 'День',
-              type: 'string'
+              type: 'string',
             },
             {
               name: 'content',
               title: 'Програма дня',
-              type: 'blockContent'
-            }
-          ]
-        }
-      ]
+              type: 'blockContent',
+            },
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'excursions',
@@ -214,12 +217,12 @@ export default defineType({
             {
               name: 'title',
               title: 'Назва екскурсії',
-              type: 'string'
+              type: 'string',
             },
             {
               name: 'content',
               title: 'Опис екскурсії',
-              type: 'blockContent'
+              type: 'blockContent',
             },
             // {
             //   name: 'gallery',
@@ -234,9 +237,9 @@ export default defineType({
             //     }
             //   ],
             // },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'hotels',
@@ -251,52 +254,41 @@ export default defineType({
               name: 'title',
               title: 'Назва готелю',
               type: 'string',
-              validation: Rule => Rule.required(),
+              validation: (Rule) => Rule.required(),
             },
             {
               name: 'stars',
               title: 'Зірковість готелю',
               type: 'number',
-              validation: Rule => Rule.required().min(1).max(5),
+              validation: (Rule) => Rule.required().min(1).max(5),
             },
             {
               name: 'price',
               title: 'Вартість оренди (від)',
               type: 'number',
-              validation: Rule => Rule.required().positive(),
+              validation: (Rule) => Rule.required().positive(),
             },
             {
               name: 'shortDescription',
               title: 'Короткий опис готелю',
               type: 'blockContent',
-              validation: Rule =>
-                Rule.custom(value =>
-                  value && value.length > 0
-                    ? true
-                    : 'Поле обовʼязкове'
-                ),
+              validation: isBlockContentRequired,
             },
             {
               name: 'fullDescription',
               title: 'Детальний опис готелю',
               type: 'blockContent',
-              validation: Rule =>
-                Rule.custom(value =>
-                  value && value.length > 0
-                    ? true
-                    : 'Поле обовʼязкове'
-                ),
+              validation: isBlockContentRequired,
             },
             {
               name: 'gallery',
               title: 'Зображення готелю',
               type: 'array',
-              of: [{ type: 'image', options: { hotspot: true } }],
-              validation: Rule =>
-                Rule.required().min(1).error('Додайте хоча б одне зображення'),
+              of: [{type: 'image', options: {hotspot: true}}],
+              validation: (Rule) => Rule.required().min(1).error('Додайте хоча б одне зображення'),
             },
           ],
-          validation: Rule => Rule.required(),
+          validation: (Rule) => Rule.required(),
         },
       ],
     }),
@@ -332,12 +324,12 @@ export default defineType({
             {
               name: 'title',
               title: 'Назва',
-              type: 'string'
+              type: 'string',
             },
             {
               name: 'description',
               title: 'Короткий опис',
-              type: 'string'
+              type: 'string',
             },
             {
               name: 'image',
@@ -346,11 +338,11 @@ export default defineType({
               options: {
                 hotspot: true,
               },
-              validation: rule => rule.required().error('Це поле обов’язкове'),
-            }
-          ]
-        }
-      ]
+              validation: (rule) => rule.required().error('Це поле обов’язкове'),
+            },
+          ],
+        },
+      ],
     }),
   ],
   preview: {
