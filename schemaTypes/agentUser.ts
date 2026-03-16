@@ -7,6 +7,12 @@ const agentUser = defineType({
   type: 'document',
 
   fields: [
+    defineField({
+      name: 'isApproved',
+      title: 'Агент схвалений',
+      type: 'boolean',
+      initialValue: true,
+    }),
     // ─────────────────────
     // 📧 Email (логін)
     // ─────────────────────
@@ -50,7 +56,7 @@ const agentUser = defineType({
       name: 'legalCompanyName',
       title: 'Юридична назва фірми',
       type: 'string',
-      validation: Rule => Rule.required(),
+      // validation: Rule => Rule.required(),
     }),
 
     // ─────────────────────
@@ -88,7 +94,7 @@ const agentUser = defineType({
       title: 'ЄДРПОУ',
       type: 'string',
       validation: Rule =>
-        Rule.required().custom((value) => {
+        Rule.custom((value) => {
           if (!value) return true
           return /^\d{8,10}$/.test(value)
             ? true
@@ -122,7 +128,7 @@ const agentUser = defineType({
       name: 'taxForm',
       title: 'Форма оподактування',
       type: 'string',
-      validation: Rule => Rule.required(),
+      // validation: Rule => Rule.required(),
       options: {
         list: [
           { title: 'ФОП', value: 'fop' },
