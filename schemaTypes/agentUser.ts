@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity'
 import PasswordHashInput from '../components/PasswordHashInput'
+import PasswordWithHashInput from '../components/PasswordWithHashInput'
 
 const agentUser = defineType({
   name: 'agentUser',
@@ -139,17 +140,37 @@ const agentUser = defineType({
     }),
 
     // ─────────────────────
-    // 🔒 Пароль (хеш)
+    // 🔒 Пароль
     // ─────────────────────
     defineField({
-      name: 'passwordHash',
+      name: 'password',
       title: 'Password',
-      type: 'string',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'plain',
+          title: 'Plain password',
+          type: 'string',
+        }),
+        defineField({
+          name: 'hash',
+          title: 'Password hash',
+          type: 'string',
+          readOnly: true,
+        }),
+      ],
       components: {
-        input: PasswordHashInput,
+        input: PasswordWithHashInput,
       },
-      validation: Rule => Rule.required(),
+      validation: Rule =>
+        Rule.required().custom((value) => {
+          // if (!value?.plain) return 'Пароль обовʼязковий'
+          if (!value?.hash) return 'Хеш пароля обовʼязковий'
+          return true
+        }),
     }),
+
+
     // ─────────────────────
     // 🔒 id из CRM
     // ─────────────────────

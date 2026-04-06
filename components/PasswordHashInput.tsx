@@ -8,7 +8,6 @@ export default function PasswordHashInput(
 ) {
   const { onChange, readOnly, value } = props
 
-  // локально храним ТОЛЬКО введённый пароль (не хеш)
   const [plainPassword, setPlainPassword] = useState('')
 
   const handleChange = useCallback(
