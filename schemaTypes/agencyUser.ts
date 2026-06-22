@@ -1,5 +1,5 @@
 import { defineType, defineField } from 'sanity'
-import PasswordHashInput from '../components/PasswordHashInput'
+import PasswordWithHashInput from '../components/PasswordWithHashInput'
 
 const agencyUser = defineType({
   name: 'agencyUser',
@@ -42,13 +42,30 @@ const agencyUser = defineType({
     // 🔒 Пароль (хеш)
     // ─────────────────────
     defineField({
-      name: 'passwordHash',
+      name: 'password',
       title: 'Пароль',
-      type: 'string',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'plain',
+          title: 'Plain password',
+          type: 'string',
+        }),
+        defineField({
+          name: 'hash',
+          title: 'Password hash',
+          type: 'string',
+          readOnly: true,
+        }),
+      ],
       components: {
-        input: PasswordHashInput,
+        input: PasswordWithHashInput,
       },
-      validation: Rule => Rule.required(),
+      validation: Rule =>
+        Rule.required().custom((value) => {
+          if (!value?.hash) return 'Хеш пароля обовʼязковий'
+          return true
+        }),
     }),
 
     // ─────────────────────
@@ -59,7 +76,7 @@ const agencyUser = defineType({
       title: 'ЄДРПОУ агенції',
       type: 'string',
       validation: Rule =>
-        Rule.required().custom((value) => {
+        Rule.custom((value) => {
           if (!value) return true
           return /^\d{8,10}$/.test(value)
             ? true
@@ -71,14 +88,12 @@ const agencyUser = defineType({
       name: 'agencyCity',
       title: 'Місто реєстрації',
       type: 'string',
-      validation: Rule => Rule.required(),
     }),
 
     defineField({
       name: 'agencyLegalAddress',
       title: 'Адреса реєстрації',
       type: 'string',
-      validation: Rule => Rule.required(),
     }),
 
     defineField({
@@ -106,15 +121,6 @@ const agencyUser = defineType({
       title: 'Email головного офісу',
       type: 'string',
       validation: Rule => Rule.required().email(),
-    }),
-            // ─────────────────────
-    // 🔒 id из CRM
-    // ─────────────────────
-    defineField({
-      name: 'crmId',
-      title: 'CRM ID',
-      type: 'string',
-      readOnly: true,
     }),
   ],
 
