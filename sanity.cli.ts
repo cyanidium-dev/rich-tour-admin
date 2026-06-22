@@ -1,6 +1,7 @@
 import {defineCliConfig} from 'sanity/cli'
 
 export default defineCliConfig({
+  studioHost: 'richtour',
   api: {
     projectId: 'elggedkx',
     dataset: 'production'
