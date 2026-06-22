@@ -178,7 +178,7 @@ const agentUser = defineType({
       name: 'crmId',
       title: 'CRM ID',
       type: 'string',
-      readOnly: true,
+      description: 'Заповніть вручну, якщо агент вже існує в OneBox OS. Якщо поле порожнє, сайт створить нового агента в CRM через webhook.',
     }),
   ],
 
