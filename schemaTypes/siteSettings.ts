@@ -7,6 +7,14 @@ const siteSettings = defineType({
 
   fields: [
     defineField({
+      name: "eurMarkupUah",
+      title: "Надбавка до курсу євро, грн за 1 €",
+      type: "number",
+      initialValue: 0,
+      validation: (Rule) =>
+        Rule.required().min(0).precision(2).error("Вкажіть надбавку від 0 грн з точністю до копійок"),
+    }),
+    defineField({
       name: "agentContract",
       title: "Договір агента",
       type: "file",

@@ -1,6 +1,12 @@
 import {defineField, defineType} from 'sanity';
 
 import { isBlockContentRequired } from './functions';
+import {createTourImageInput, cropFields} from '../components/TourImageInput'
+import {galleryPresets, hotelPresets, inspirationPresets} from '../components/tourImageCrops'
+
+const GalleryImageInput = createTourImageInput(galleryPresets)
+const HotelImageInput = createTourImageInput(hotelPresets)
+const InspirationImageInput = createTourImageInput(inspirationPresets)
 
 export default defineType({
   name: 'tour-to-date',
@@ -27,14 +33,14 @@ export default defineType({
     }),
     defineField({
       name: 'price',
-      title: 'Ціна',
+      title: 'Базова ціна, €',
       type: 'number',
       validation: (Rule) =>
         Rule.required().error('Це поле обов’язкове').min(0).error('Ціна не може бути від’ємною'),
     }),
     defineField({
       name: 'agentPrice',
-      title: 'Ціна для агента',
+      title: 'Ціна для агента, €',
       type: 'number',
       validation: (Rule) => Rule.min(0).error('Ціна не може бути від’ємною'),
     }),
@@ -173,6 +179,8 @@ export default defineType({
           options: {
             hotspot: true,
           },
+          fields: cropFields(galleryPresets),
+          components: {input: GalleryImageInput},
         },
       ],
       validation: (Rule) => Rule.required().min(5).error('Додайте щонайменше 5 зображень'),
@@ -260,11 +268,11 @@ export default defineType({
               name: 'stars',
               title: 'Зірковість готелю',
               type: 'number',
-              validation: (Rule) => Rule.required().min(1).max(5),
+              validation: (Rule) => Rule.min(1).max(5),
             },
             {
               name: 'price',
-              title: 'Вартість оренди (від)',
+              title: 'Вартість оренди (від), €',
               type: 'number',
               validation: (Rule) => Rule.required().positive(),
             },
@@ -284,7 +292,7 @@ export default defineType({
               name: 'gallery',
               title: 'Зображення готелю',
               type: 'array',
-              of: [{type: 'image', options: {hotspot: true}}],
+              of: [{type: 'image', options: {hotspot: true}, fields: cropFields(hotelPresets), components: {input: HotelImageInput}}],
               validation: (Rule) => Rule.required().min(1).error('Додайте хоча б одне зображення'),
             },
           ],
@@ -338,6 +346,8 @@ export default defineType({
               options: {
                 hotspot: true,
               },
+              fields: cropFields(inspirationPresets),
+              components: {input: InspirationImageInput},
               validation: (rule) => rule.required().error('Це поле обов’язкове'),
             },
           ],

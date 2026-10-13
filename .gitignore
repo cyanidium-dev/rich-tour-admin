@@ -27,6 +27,7 @@
 
 # Dotenv and similar local-only files
 *.local
+!.env.example
 
 #IDE settings
 .idea

@@ -29,7 +29,7 @@ export default function PasswordHashInput(
   const hasPassword = Boolean(value)
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       <TextInput
         type="password"
         value={plainPassword}

@@ -1,6 +1,6 @@
 import React from 'react'
 import {useClient} from 'sanity'
-import {Card, Stack, Text, Button, Box, Flex, Badge} from '@sanity/ui'
+import {Card, Stack, Text, Button, Flex, Badge} from '@sanity/ui'
 import {useRouter} from 'sanity/router'
 
 type Props = {documentId: string}
@@ -61,7 +61,7 @@ export default function RelatedDateTours({documentId}: Props) {
   }
 
   return (
-    <Stack space={4} padding={4}>
+    <Stack gap={4} padding={4}>
       <Flex justify="space-between" align="center">
         <Text size={2} weight="semibold">
           Тури на конкретні дати (цього базового туру)
@@ -103,17 +103,18 @@ export default function RelatedDateTours({documentId}: Props) {
               tone="transparent"
             >
               <Flex justify="space-between" align="center">
-                <Stack space={2}>
+                <Stack gap={2}>
                   <Text weight="semibold" size={2}>
                     {t.title || '(без назви)'}
                   </Text>
 
                   <Text size={1} muted>
-                    {start} → {end} • {typeof t.price === 'number' ? `${t.price} ₴` : 'ціна —'}
+                    {start} → {end} • {typeof t.price === 'number' ? `${t.price} €` : 'ціна —'}
                   </Text>
                 </Stack>
 
                 <Flex gap={3} align="center">
+                  <Badge tone="primary">{avail}</Badge>
                   <Button
                     text="Відкрити"
                     tone="primary"

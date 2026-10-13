@@ -1,4 +1,8 @@
 import {defineField, defineType} from 'sanity'
+import {createTourImageInput, cropFields} from '../components/TourImageInput'
+import {basicPresets} from '../components/tourImageCrops'
+
+const BasicImageInput = createTourImageInput(basicPresets)
 
 export default defineType({
   name: 'tour-basic',
@@ -64,6 +68,8 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      fields: cropFields(basicPresets),
+      components: {input: BasicImageInput},
       validation: rule => rule.required().error('Це поле обов’язкове'),
     }),
     defineField({

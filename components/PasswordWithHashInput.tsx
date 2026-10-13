@@ -46,7 +46,7 @@ export default function PasswordWithHashInput(
   )
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       <TextInput
         type="text"
         value={plainPassword}

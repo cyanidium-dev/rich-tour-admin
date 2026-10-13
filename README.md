@@ -1,11 +1,34 @@
-# Sanity Blogging Content Studio
+# Rich Tour Sanity Studio
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
+Studio содержит три workspace в одном репозитории:
 
-Now you can do the following things:
+- `/content` — туры, категории туров и страны из dataset `production`, доступны всем сотрудникам Studio;
+- `/site` — настройки сайта и остальной публичный контент из dataset `production`, видны только суперадминам;
+- `/users` — агенты и агентства из dataset `users-production`, видны в Studio только суперадминам.
 
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- Check out the example frontend: [React/Next.js](https://github.com/sanity-io/tutorial-sanity-blog-react-next)
-- [Read the blog post about this template](https://www.sanity.io/blog/build-your-own-blog-with-sanity-and-next-js?utm_source=readme)
-- [Join the community Slack](https://slack.sanity.io/?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+Репозитории сайта и Studio остаются раздельными.
+
+В workspace контента для `tour-to-date` доступно действие создания нового выезда на основе текущего документа. Оно копирует весь вариант тура и очищает даты и CRM-номер. Модель намеренно допускает отдельные программу, галерею, отели и другие детали для каждого выезда.
+
+В workspace пользователей действие повторной CRM-синхронизации переводит агента в `pending`. Для немедленного запуска должен быть настроен webhook из `users-production` в API сайта; без webhook документ будет обработан ежедневным cron.
+
+Пароли хранятся в объекте `{plain, hash}` согласно требованиям проекта. Studio не выполняет их автоматическое преобразование при переносе dataset.
+
+## Конфигурация
+
+Список переменных находится в `.env.example`.
+
+`SANITY_STUDIO_SUPERADMIN_EMAILS` — список email существующих участников проекта Sanity с ролью `Administrator`, разделённых запятыми. Адреса сравниваются с email вошедшего пользователя без учёта регистра и пробелов по краям. После изменения переменной пересоберите Studio. Если список пуст или адрес не совпадает, дополнительные workspace и инструменты не показываются. Пароль пользователь вводит при обычном входе в Sanity; Studio не хранит ни пароль, ни его хэш.
+
+На тарифе Sanity Free все сотрудники, редактирующие туры, должны иметь серверную роль `Administrator`. Инструмент «Сотрудники Studio» в `/site` показывает участников проекта и ожидающие приглашения, приглашает новых сотрудников с этой ролью, отзывает приглашения и удаляет обычных админов. Новый участник получает интерфейс обычного админа, пока его email не указан в `SANITY_STUDIO_SUPERADMIN_EMAILS`. Инструмент использует текущую сессию Sanity и не требует отдельного API-токена. Самого себя и любого суперадмина из списка удалить через инструмент нельзя.
+
+Это разделение интерфейса, а не серверная защита: обладатель роли Sanity `Administrator` может обращаться к обоим dataset и настройкам проекта вне скрытых разделов Studio. Обычным админам не следует передавать `USER_DATA_MASTER_KEY`; его знание также не ограничивается интерфейсом Studio.
+
+В списках агентов и агентств Studio показывает открытые `displayName` и `displayIdentity` (название компании и email либо название агентства и login). Dataset `users-production` доступен для публичного чтения через API Sanity, поэтому эти подписи видны и вне Studio. При отсутствии полей до заполнения старых документов остаётся прежняя подпись «Зашифрованный агент» или «Зашифрованное агентство». Остальные данные профиля и пароль расшифровываются отдельно с `USER_DATA_MASTER_KEY`.
+
+```bash
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
+```

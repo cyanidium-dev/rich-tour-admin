@@ -50,7 +50,7 @@ export default function RelatedBaseTours(props: Props) {
   }
 
   return (
-    <Stack space={4} padding={4}>
+    <Stack gap={4} padding={4}>
       <Flex justify="space-between" align="center">
         <Text size={2} weight="semibold">
           Базові тури цієї категорії

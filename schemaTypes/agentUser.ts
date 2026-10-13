@@ -1,196 +1,140 @@
-import { defineType, defineField } from 'sanity'
-import PasswordHashInput from '../components/PasswordHashInput'
-import PasswordWithHashInput from '../components/PasswordWithHashInput'
+import {defineField, defineType} from 'sanity'
 
 const agentUser = defineType({
   name: 'agentUser',
-  title: 'Агенти',
+  title: 'Агенты',
   type: 'document',
-
   fields: [
     defineField({
       name: 'isApproved',
-      title: 'Агент схвалений',
+      title: 'Агент одобрен',
       type: 'boolean',
-      initialValue: true,
+      initialValue: false,
     }),
-    // ─────────────────────
-    // 📧 Email (логін)
-    // ─────────────────────
     defineField({
-      name: 'email',
-      title: 'Email',
-      type: 'string',
-      validation: Rule => Rule.required().email(),
-    }),
-    {
-      name: 'agency',
-      title: 'Агенція, до якої належить агент',
-      type: 'array',
-      of: [
-        {
-          type: 'reference',
-          to: [{ type: 'agencyUser' }]
-        }
-      ],
-      options: {
-        layout: 'checkbox'
-      },
-    },
-    defineField({
-      name: 'agencyCrmId',
-      title: 'Agency CRM ID',
+      name: 'displayName',
+      title: 'Название для списка',
       type: 'string',
       readOnly: true,
+      hidden: true,
     }),
-    // ─────────────────────
-    // 🏢 Назви компанії
-    // ─────────────────────
     defineField({
-      name: 'companyName',
-      title: 'Повне ім\'я/Назва фірми',
+      name: 'displayIdentity',
+      title: 'Email для списка',
       type: 'string',
-      validation: Rule => Rule.required(),
+      readOnly: true,
+      hidden: true,
     }),
-
     defineField({
-      name: 'legalCompanyName',
-      title: 'Юридична назва фірми',
+      name: 'agency',
+      title: 'Агентство',
+      type: 'array',
+      of: [{type: 'reference', to: [{type: 'agencyUser'}]}],
+      options: {layout: 'list'},
+    }),
+    defineField({
+      name: 'identityLookup',
+      title: 'Blind identity index',
       type: 'string',
-      // validation: Rule => Rule.required(),
+      readOnly: true,
+      hidden: true,
     }),
-
-    // ─────────────────────
-    // 📞 Телефон
-    // ─────────────────────
     defineField({
-      name: 'phone',
-      title: 'Телефон',
-      type: 'string',
-      validation: Rule =>
-        Rule.required().custom((value) => {
-          if (typeof value !== "string") {
-            return "Некоректний номер телефону"
-          }
-    
-          // Убираем ВСЁ, кроме цифр
-          const digits = value.replace(/[^\d]/g, "")
-    
-          // Допустимые варианты:
-          // 10 цифр (0997875037)
-          // 12 цифр (380997875037)
-          if (digits.length === 10 || digits.length === 12) {
-            return true
-          }
-    
-          return "Номер телефону має містити 10 або 12 цифр"
-        }),
+      name: 'encryptedPayload',
+      title: 'Данные пользователя и пароль',
+      type: 'encryptedUserPayload',
+      validation: (Rule) => Rule.required(),
     }),
-
-    // ─────────────────────
-    // 🧾 ЄДРПОУ
-    // ─────────────────────
     defineField({
-      name: 'edrpou',
-      title: 'ЄДРПОУ',
-      type: 'string',
-      validation: Rule =>
-        Rule.custom((value) => {
-          if (!value) return true
-          return /^\d{8,10}$/.test(value)
-            ? true
-            : 'ЄДРПОУ має містити від 8 до 10 цифр'
-        }),
+      name: 'crmLinked',
+      title: 'Связан с CRM',
+      type: 'boolean',
+      readOnly: true,
+      hidden: true,
     }),
-
-    // ─────────────────────
-    // 🏙️ Місто
-    // ─────────────────────
     defineField({
-      name: 'city',
-      title: 'City',
-      type: 'string',
-      validation: Rule => Rule.required(),
-    }),
-
-    // ─────────────────────
-    // 🌐 Сайт (необовʼязково)
-    // ─────────────────────
-    defineField({
-      name: 'site',
-      title: 'Сайт',
-      type: 'string',
-    }),
-
-    // ─────────────────────
-    // 🧮 Форма оподаткування
-    // ─────────────────────
-    defineField({
-      name: 'taxForm',
-      title: 'Форма оподактування',
-      type: 'string',
-      // validation: Rule => Rule.required(),
-      options: {
-        list: [
-          { title: 'ФОП', value: 'fop' },
-          { title: 'ТОВ', value: 'tov' },
-          { title: 'Інше', value: 'other' },
-        ],
-      },
-    }),
-
-    // ─────────────────────
-    // 🔒 Пароль
-    // ─────────────────────
-    defineField({
-      name: 'password',
-      title: 'Password',
+      name: 'crmSync',
+      title: 'Синхронизация с CRM',
       type: 'object',
+      options: {collapsible: true, collapsed: false},
       fields: [
         defineField({
-          name: 'plain',
-          title: 'Plain password',
-          type: 'string',
-        }),
-        defineField({
-          name: 'hash',
-          title: 'Password hash',
+          name: 'status',
+          title: 'Статус',
           type: 'string',
           readOnly: true,
+          options: {
+            list: [
+              {title: 'Ожидает', value: 'pending'},
+              {title: 'Выполняется', value: 'processing'},
+              {title: 'Синхронизирован', value: 'synced'},
+              {title: 'Будет повторено', value: 'failed'},
+              {title: 'Нужна ручная проверка', value: 'manualReview'},
+            ],
+          },
+        }),
+        defineField({
+          name: 'attempts',
+          title: 'Количество попыток',
+          type: 'number',
+          readOnly: true,
+        }),
+        defineField({
+          name: 'nextRetryAt',
+          title: 'Следующая попытка',
+          type: 'datetime',
+          readOnly: true,
+        }),
+        defineField({
+          name: 'lastAttemptAt',
+          title: 'Последняя попытка',
+          type: 'datetime',
+          readOnly: true,
+        }),
+        defineField({
+          name: 'lastSuccessAt',
+          title: 'Последний успех',
+          type: 'datetime',
+          readOnly: true,
+        }),
+        defineField({name: 'lastErrorCode', title: 'Код ошибки', type: 'string', readOnly: true}),
+        defineField({
+          name: 'lockUntil',
+          title: 'Блокировка до',
+          type: 'datetime',
+          readOnly: true,
+          hidden: true,
+        }),
+        defineField({
+          name: 'manualRetryRequestedAt',
+          title: 'Ручной повтор',
+          type: 'datetime',
+          readOnly: true,
+          hidden: true,
         }),
       ],
-      components: {
-        input: PasswordWithHashInput,
-      },
-      validation: Rule =>
-        Rule.required().custom((value) => {
-          // if (!value?.plain) return 'Пароль обовʼязковий'
-          if (!value?.hash) return 'Хеш пароля обовʼязковий'
-          return true
-        }),
-    }),
-
-
-    // ─────────────────────
-    // 🔒 id из CRM
-    // ─────────────────────
-    defineField({
-      name: 'crmId',
-      title: 'CRM ID',
-      type: 'string',
-      description: 'Заповніть вручну, якщо агент вже існує в OneBox OS. Якщо поле порожнє, сайт створить нового агента в CRM через webhook.',
     }),
   ],
-
-  // ─────────────────────
-  // 👁️ Preview
-  // ─────────────────────
   preview: {
     select: {
-      title: 'companyName',
-      subtitle: 'email',
+      displayName: 'displayName',
+      displayIdentity: 'displayIdentity',
+      status: 'crmSync.status',
+      approved: 'isApproved',
+    },
+    prepare({displayName, displayIdentity, status, approved}) {
+      return {
+        title: displayName || 'Зашифрованный агент',
+        subtitle: [
+          displayIdentity,
+          approved ? 'одобрен' : 'не одобрен',
+          `CRM: ${status || 'нет статуса'}`,
+        ]
+          .filter(Boolean)
+          .join(' · '),
+      }
     },
   },
 })
 
-export default agentUser;
+export default agentUser
