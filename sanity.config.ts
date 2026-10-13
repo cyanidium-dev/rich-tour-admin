@@ -6,7 +6,6 @@ import {visionTool} from '@sanity/vision'
 import RelatedBaseTours from './components/RelatedBaseTours'
 import RelatedDateTours from './components/RelatedDateTours'
 import DuplicateTourDateAction from './components/DuplicateTourDateAction'
-import RetryCrmSyncAction from './components/RetryCrmSyncAction'
 import UserLookupTool from './components/UserLookupTool'
 import StaffManagementTool from './components/StaffManagementTool'
 import {siteSchemaTypes, tourSchemaTypes, userSchemaTypes} from './schemaTypes'
@@ -39,7 +38,9 @@ export default defineConfig([
               .views([
                 S.view.form().id('form').title('Редагування'),
                 S.view
-                  .component(() => React.createElement(RelatedBaseTours, {documentId: documentId ?? ''}))
+                  .component(() =>
+                    React.createElement(RelatedBaseTours, {documentId: documentId ?? ''}),
+                  )
                   .id('related-base-tours')
                   .title('Базові тури'),
               ])
@@ -51,7 +52,9 @@ export default defineConfig([
               .views([
                 S.view.form().id('form').title('Редагування'),
                 S.view
-                  .component(() => React.createElement(RelatedDateTours, {documentId: documentId ?? ''}))
+                  .component(() =>
+                    React.createElement(RelatedDateTours, {documentId: documentId ?? ''}),
+                  )
                   .id('related-date-tours')
                   .title('Тури на дати'),
               ])
@@ -100,14 +103,8 @@ export default defineConfig([
     schema: {types: userSchemaTypes},
     tools: (previousTools) => [
       ...previousTools,
-      {name: 'user-lookup', title: 'Поиск пользователя', component: UserLookupTool},
+      {name: 'user-lookup', title: 'Пошук користувача', component: UserLookupTool},
     ],
-    document: {
-      actions: (previousActions, context) =>
-        context.schemaType === 'agentUser'
-          ? [...previousActions, RetryCrmSyncAction]
-          : previousActions,
-    },
     plugins: [structureTool()],
   },
 ])

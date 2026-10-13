@@ -6,18 +6,18 @@ import {ObjectInputProps, set, useCurrentUser, useFormValue} from 'sanity'
 import {isSuperAdmin} from '../studioAccess'
 
 import {decryptPayload, encryptPayload, type EncryptedUserPayload} from './userCrypto'
+import {copyPasswordToClipboard} from './copyPassword'
+import {
+  displayUserPayloadValue,
+  userPayloadFieldLabel,
+  visibleUserPayloadEntries,
+} from './userPayloadPresentation'
 
 type PasswordValue = {plain?: string; hash?: string}
 type UserPayload = Record<string, unknown> & {password?: PasswordValue}
 
 const KEY_TTL_MS = 15 * 60 * 1000
 const PASSWORD_TTL_MS = 30 * 1000
-
-function displayValue(value: unknown) {
-  if (value === null || value === undefined || value === '') return '—'
-  if (typeof value === 'object') return JSON.stringify(value)
-  return String(value)
-}
 
 export default function EncryptedUserPayloadInput(
   props: ObjectInputProps<Record<string, unknown>>,
@@ -32,6 +32,7 @@ export default function EncryptedUserPayloadInput(
   const [error, setError] = useState('')
   const [working, setWorking] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [newPassword, setNewPassword] = useState('')
   const allowed = isSuperAdmin(currentUser)
 
@@ -39,6 +40,7 @@ export default function EncryptedUserPayloadInput(
     setMasterKey('')
     setPayload(null)
     setShowPassword(false)
+    setCopyStatus('idle')
     setNewPassword('')
     setError('')
   }, [])
@@ -51,7 +53,10 @@ export default function EncryptedUserPayloadInput(
 
   useEffect(() => {
     if (!showPassword) return undefined
-    const timer = window.setTimeout(() => setShowPassword(false), PASSWORD_TTL_MS)
+    const timer = window.setTimeout(() => {
+      setShowPassword(false)
+      setCopyStatus('idle')
+    }, PASSWORD_TTL_MS)
     return () => window.clearTimeout(timer)
   }, [showPassword])
 
@@ -63,7 +68,7 @@ export default function EncryptedUserPayloadInput(
       setPayload(await decryptPayload<UserPayload>(masterKey, documentId, documentType, value))
     } catch {
       setPayload(null)
-      setError('Не удалось расшифровать данные. Проверьте master key.')
+      setError('Не вдалося розшифрувати дані. Перевірте ключ розшифрування.')
     } finally {
       setWorking(false)
     }
@@ -82,8 +87,9 @@ export default function EncryptedUserPayloadInput(
       setPayload(nextPayload)
       setNewPassword('')
       setShowPassword(false)
+      setCopyStatus('idle')
     } catch {
-      setError('Не удалось обновить зашифрованный пароль.')
+      setError('Не вдалося оновити зашифрований пароль.')
     } finally {
       setWorking(false)
     }
@@ -91,13 +97,13 @@ export default function EncryptedUserPayloadInput(
 
   const copyPassword = useCallback(async () => {
     if (!showPassword || !payload?.password?.plain) return
-    await navigator.clipboard.writeText(payload.password.plain)
+    setCopyStatus((await copyPasswordToClipboard(payload.password.plain)) ? 'success' : 'error')
   }, [payload, showPassword])
 
   if (!allowed) {
     return (
       <Card padding={3} tone="caution" border radius={2}>
-        <Text>Расшифровка доступна только суперадмину Studio.</Text>
+        <Text>Розшифрування доступне лише суперадміну Studio.</Text>
       </Card>
     )
   }
@@ -105,7 +111,7 @@ export default function EncryptedUserPayloadInput(
   if (!value) {
     return (
       <Card padding={3} tone="caution" border radius={2}>
-        <Text>Зашифрованные данные отсутствуют. Создайте пользователя через сайт или миграцию.</Text>
+        <Text>Зашифрованих даних немає. Створіть користувача через сайт або міграцію.</Text>
       </Card>
     )
   }
@@ -113,7 +119,7 @@ export default function EncryptedUserPayloadInput(
   if (!payload) {
     return (
       <Stack gap={3}>
-        <Label>USER_DATA_MASTER_KEY (base64)</Label>
+        <Label>Ключ розшифрування (USER_DATA_MASTER_KEY, base64)</Label>
         <TextInput
           type="password"
           autoComplete="off"
@@ -121,44 +127,80 @@ export default function EncryptedUserPayloadInput(
           onChange={(event) => setMasterKey(event.currentTarget.value)}
           disabled={working}
         />
-        <Button text={working ? 'Расшифровка…' : 'Открыть данные'} onClick={unlock} disabled={working || !masterKey} />
-        <Text size={1} muted>Ключ хранится только в памяти вкладки и удаляется через 15 минут.</Text>
+        <Button
+          text={working ? 'Розшифрування…' : 'Відкрити дані'}
+          onClick={unlock}
+          disabled={working || !masterKey}
+        />
+        <Text size={1} muted>
+          Ключ зберігається лише в пам’яті вкладки та видаляється через 15 хвилин.
+        </Text>
         {error && <Text size={1}>{error}</Text>}
       </Stack>
     )
   }
 
-  const entries = Object.entries(payload).filter(([name]) => name !== 'password')
+  const entries = visibleUserPayloadEntries(
+    payload,
+    documentType === 'agentUser' ? 'agentUser' : 'agencyUser',
+  )
   return (
     <Stack gap={4}>
-      <Button text="Закрыть данные и удалить ключ" mode="ghost" onClick={lock} />
+      <Button text="Закрити дані та видалити ключ" mode="ghost" onClick={lock} />
       <Card padding={3} border radius={2}>
         <Stack gap={3}>
           {entries.map(([name, fieldValue]) => (
             <Box key={name}>
-              <Label>{name}</Label>
-              <Text>{displayValue(fieldValue)}</Text>
+              <Label>{userPayloadFieldLabel(name)}</Label>
+              <Text>{displayUserPayloadValue(name, fieldValue)}</Text>
             </Box>
           ))}
         </Stack>
       </Card>
       <Card padding={3} border radius={2} tone="caution">
         <Stack gap={3}>
-          <Label>Пароль в открытом виде</Label>
+          <Label>Пароль у відкритому вигляді</Label>
           <TextInput
             type={showPassword ? 'text' : 'password'}
             value={payload.password?.plain || ''}
             readOnly
-            onBlur={() => setShowPassword(false)}
-            onCopy={(event) => event.preventDefault()}
+            onFocus={(event) => showPassword && event.currentTarget.select()}
           />
-          <Button text={showPassword ? 'Скрыть пароль' : 'Показать пароль на 30 секунд'} onClick={() => setShowPassword((current) => !current)} />
-          <Button text="Копировать показанный пароль" mode="ghost" onMouseDown={(event) => event.preventDefault()} onClick={copyPassword} disabled={!showPassword || !payload.password?.plain} />
+          <Button
+            text={showPassword ? 'Приховати пароль' : 'Показати пароль на 30 секунд'}
+            onClick={() => {
+              setShowPassword((current) => !current)
+              setCopyStatus('idle')
+            }}
+          />
+          <Button
+            text="Скопіювати показаний пароль"
+            mode="ghost"
+            onClick={copyPassword}
+            disabled={!showPassword || !payload.password?.plain}
+          />
+          {copyStatus === 'success' && <Text size={1}>Пароль скопійовано.</Text>}
+          {copyStatus === 'error' && (
+            <Text size={1}>
+              Не вдалося скопіювати автоматично. Виділіть пароль і натисніть Ctrl+C.
+            </Text>
+          )}
           {!readOnly && (
             <>
-              <Label>Новый пароль</Label>
-              <TextInput type="text" autoComplete="off" value={newPassword} onChange={(event) => setNewPassword(event.currentTarget.value)} disabled={working} />
-              <Button text={working ? 'Сохранение…' : 'Зашифровать и сохранить новый пароль'} onClick={savePassword} disabled={working || !newPassword} tone="primary" />
+              <Label>Новий пароль</Label>
+              <TextInput
+                type="text"
+                autoComplete="off"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.currentTarget.value)}
+                disabled={working}
+              />
+              <Button
+                text={working ? 'Збереження…' : 'Зашифрувати та зберегти новий пароль'}
+                onClick={savePassword}
+                disabled={working || !newPassword}
+                tone="primary"
+              />
             </>
           )}
           {error && <Text size={1}>{error}</Text>}
