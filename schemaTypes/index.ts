@@ -6,7 +6,6 @@ import review from './review'
 import faq from './faq'
 import team from './team'
 import doc from './doc'
-import contact from './contact'
 import tourCategory from './tour-category'
 import tourBasic from './tour-basic'
 import tourToDate from './tour-to-date'
@@ -17,7 +16,18 @@ import siteSettings from './siteSettings'
 import encryptedUserPayload from './encryptedUserPayload'
 
 export const tourSchemaTypes = [country, tourCategory, tourBasic, tourToDate, blockContent]
-export const siteSchemaTypes = [siteSettings, review, faq, team, doc, contact, blockContent]
-export const contentSchemaTypes = [siteSettings, country, tourCategory, tourBasic, tourToDate, review, faq, team, doc, contact, blockContent]
+export const siteSchemaTypes = [siteSettings, review, faq, team, doc, blockContent]
+export const contentSchemaTypes = [
+  siteSettings,
+  country,
+  tourCategory,
+  tourBasic,
+  tourToDate,
+  review,
+  faq,
+  team,
+  doc,
+  blockContent,
+]
 export const userSchemaTypes = [encryptedUserPayload, agentUser, agencyUser]
 export const schemaTypes = [...contentSchemaTypes, ...userSchemaTypes]

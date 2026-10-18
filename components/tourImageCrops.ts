@@ -16,13 +16,27 @@ export const basicPresets: CropPreset[] = [
   {id: 'heroDesktop', title: 'Сторінка туру: комп’ютер 645×300', width: 645, height: 300},
 ]
 
-export const galleryPresets: CropPreset[] = [
-  {id: 'heroLeft', title: 'Галерея зверху: ліва 454×244', width: 454, height: 244},
-  {id: 'heroRight', title: 'Галерея зверху: права 645×244', width: 645, height: 244},
-  {id: 'mobile', title: 'Галерея зверху: телефон 342×184', width: 342, height: 184},
-  {id: 'benefits', title: 'Переваги: 600×350', width: 600, height: 350},
-  {id: 'costShort', title: 'Вартість: 360×544', width: 360, height: 544},
-  {id: 'costTall', title: 'Вартість: 360×702', width: 360, height: 702},
+export const heroMainPresets: CropPreset[] = [
+  {id: 'heroDesktop', title: 'Верхнє головне: комп’ютер 645×300', width: 645, height: 300},
+  {id: 'heroMobile', title: 'Верхнє головне: телефон 342×184', width: 342, height: 184},
+]
+export const heroLeftPresets: CropPreset[] = [
+  {id: 'heroLeft', title: 'Верхнє ліве: комп’ютер 454×244', width: 454, height: 244},
+  {id: 'mobile', title: 'Верхнє ліве: телефон 342×184', width: 342, height: 184},
+]
+export const heroRightPresets: CropPreset[] = [
+  {id: 'heroRight', title: 'Верхнє праве: комп’ютер 645×244', width: 645, height: 244},
+  {id: 'mobile', title: 'Верхнє праве: телефон 342×184', width: 342, height: 184},
+]
+export const benefitsPresets: CropPreset[] = [
+  {id: 'benefits', title: 'Переваги: комп’ютер 600×350', width: 600, height: 350},
+  {id: 'benefitsMobile', title: 'Переваги: телефон 342×234', width: 342, height: 234},
+]
+export const costShortPresets: CropPreset[] = [
+  {id: 'costShort', title: 'Вартість: ліве 360×544', width: 360, height: 544},
+]
+export const costTallPresets: CropPreset[] = [
+  {id: 'costTall', title: 'Вартість: праве 360×702', width: 360, height: 702},
 ]
 
 export const hotelPresets: CropPreset[] = [

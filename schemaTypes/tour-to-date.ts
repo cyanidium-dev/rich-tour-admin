@@ -2,9 +2,23 @@ import {defineField, defineType} from 'sanity';
 
 import { isBlockContentRequired } from './functions';
 import {createTourImageInput, cropFields} from '../components/TourImageInput'
-import {galleryPresets, hotelPresets, inspirationPresets} from '../components/tourImageCrops'
+import {
+  benefitsPresets,
+  costShortPresets,
+  costTallPresets,
+  heroLeftPresets,
+  heroMainPresets,
+  heroRightPresets,
+  hotelPresets,
+  inspirationPresets,
+} from '../components/tourImageCrops'
 
-const GalleryImageInput = createTourImageInput(galleryPresets)
+const HeroMainImageInput = createTourImageInput(heroMainPresets)
+const HeroLeftImageInput = createTourImageInput(heroLeftPresets)
+const HeroRightImageInput = createTourImageInput(heroRightPresets)
+const BenefitsImageInput = createTourImageInput(benefitsPresets)
+const CostShortImageInput = createTourImageInput(costShortPresets)
+const CostTallImageInput = createTourImageInput(costTallPresets)
 const HotelImageInput = createTourImageInput(hotelPresets)
 const InspirationImageInput = createTourImageInput(inspirationPresets)
 
@@ -12,6 +26,11 @@ export default defineType({
   name: 'tour-to-date',
   title: 'Тур на конкретну дату',
   type: 'document',
+  fieldsets: [
+    {name: 'heroImages', title: 'Зображення верхнього блоку'},
+    {name: 'tourBenefits', title: 'Переваги туру'},
+    {name: 'tourCostImages', title: 'Зображення вартості туру'},
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -169,26 +188,65 @@ export default defineType({
       type: 'file',
       // validation: Rule => Rule.required().error('Завантажте програму')
     },
-    {
-      name: 'gallery',
-      title: 'Галерея зображень',
-      type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-          fields: cropFields(galleryPresets),
-          components: {input: GalleryImageInput},
-        },
-      ],
-      validation: (Rule) => Rule.required().min(5).error('Додайте щонайменше 5 зображень'),
-    },
+    defineField({
+      name: 'heroMainImage',
+      title: 'Верхній блок: головне зображення',
+      fieldset: 'heroImages',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(heroMainPresets),
+      components: {input: HeroMainImageInput},
+    }),
+    defineField({
+      name: 'heroLeftImage',
+      title: 'Верхній блок: нижнє ліве зображення',
+      fieldset: 'heroImages',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(heroLeftPresets),
+      components: {input: HeroLeftImageInput},
+    }),
+    defineField({
+      name: 'heroRightImage',
+      title: 'Верхній блок: нижнє праве зображення',
+      fieldset: 'heroImages',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(heroRightPresets),
+      components: {input: HeroRightImageInput},
+    }),
     defineField({
       name: 'benefits',
       title: 'Переваги туру',
+      fieldset: 'tourBenefits',
       type: 'blockContent',
+    }),
+    defineField({
+      name: 'benefitsImage',
+      title: 'Переваги туру: зображення',
+      fieldset: 'tourBenefits',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(benefitsPresets),
+      components: {input: BenefitsImageInput},
+    }),
+    defineField({
+      name: 'costShortImage',
+      title: 'Вартість туру: ліве зображення',
+      fieldset: 'tourCostImages',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(costShortPresets),
+      components: {input: CostShortImageInput},
+    }),
+    defineField({
+      name: 'costTallImage',
+      title: 'Вартість туру: праве зображення',
+      fieldset: 'tourCostImages',
+      type: 'image',
+      options: {hotspot: true},
+      fields: cropFields(costTallPresets),
+      components: {input: CostTallImageInput},
     }),
     defineField({
       name: 'sections',
