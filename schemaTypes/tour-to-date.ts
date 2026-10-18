@@ -365,7 +365,7 @@ export default defineType({
     }),
     defineField({
       name: 'additionalConditions',
-      title: 'Додаткові умови',
+      title: 'Додаткову інформацію',
       type: 'blockContent',
     }),
     defineField({
