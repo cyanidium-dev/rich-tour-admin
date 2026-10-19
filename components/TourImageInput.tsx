@@ -18,6 +18,19 @@ function rangeStyle(value: number, min: number, max: number): CSSProperties {
   return {'--range-progress': `${progress}%`} as CSSProperties
 }
 
+async function prepareImageForUpload(file: File): Promise<File> {
+  if (!/\.hei[cf]$/i.test(file.name) && !/^image\/hei[cf]$/i.test(file.type)) return file
+
+  try {
+    const {heicTo} = await import('heic-to')
+    const jpeg = await heicTo({blob: file, type: 'image/jpeg', quality: 0.92})
+    const name = file.name.replace(/\.hei[cf]$/i, '') + '.jpg'
+    return new File([jpeg], name, {type: 'image/jpeg', lastModified: file.lastModified})
+  } catch {
+    throw new Error('Не вдалося перетворити HEIC на JPEG. Спробуйте інше фото або збережіть його як JPG.')
+  }
+}
+
 type TourImage = {
   _type?: 'image'
   _key?: string
@@ -103,7 +116,8 @@ export function createTourImageInput(presets: CropPreset[]) {
       setBusy(true)
       setError(null)
       try {
-        const asset = await client.assets.upload('image', file, {filename: file.name})
+        const imageFile = await prepareImageForUpload(file)
+        const asset = await client.assets.upload('image', imageFile, {filename: imageFile.name})
         const displayCrops = Object.fromEntries(
           presets.map((item) => [item.id, makeCrop(asset._id, item)]).filter((entry) => entry[1]),
         ) as Record<string, CropRect>
@@ -158,7 +172,7 @@ export function createTourImageInput(presets: CropPreset[]) {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             hidden
             onChange={(event) => void upload(event.target.files?.[0])}
           />
@@ -170,7 +184,7 @@ export function createTourImageInput(presets: CropPreset[]) {
           {ref && (
             <Stack gap={4}>
               <Text size={1}>
-                Оберіть місце на сайті та налаштуйте його кадр. Оригінал фото залишається незмінним.
+                Оберіть місце на сайті та налаштуйте його кадр. Оригінал завантаженого фото залишається незмінним. HEIC/HEIF перед завантаженням перетворюється на JPG.
               </Text>
               <Flex gap={2} wrap="wrap">
                 {presets.map((item) => (
