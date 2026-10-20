@@ -13,13 +13,19 @@ export default function PreviewTourDateAction(props: DocumentActionProps) {
 
   return {
     label: 'Подивитися на сайті',
-    disabled: !saved || !siteUrl,
-    title: !saved ? 'Спочатку збережіть чернетку' : undefined,
+    disabled: !saved,
+    title: !saved
+      ? 'Спочатку збережіть чернетку'
+      : !siteUrl
+        ? 'Адресу сайту не налаштовано в Studio'
+        : undefined,
     onHandle: () => {
       try {
         const token = client.config().token
         if (!token) throw new Error('Увійдіть у Studio повторно, щоб відкрити перегляд')
-        if (!siteUrl) throw new Error('Адресу сайту не налаштовано')
+        if (!siteUrl) {
+          throw new Error('Адресу сайту не налаштовано. Задайте SANITY_STUDIO_SITE_URL та пересоберіть Studio')
+        }
 
         const url = new URL('/api/tour-preview', siteUrl)
         if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Неправильна адреса сайту')
