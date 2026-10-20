@@ -6,6 +6,7 @@ import {visionTool} from '@sanity/vision'
 import RelatedBaseTours from './components/RelatedBaseTours'
 import RelatedDateTours from './components/RelatedDateTours'
 import DuplicateTourDateAction from './components/DuplicateTourDateAction'
+import PreviewTourDateAction from './components/PreviewTourDateAction'
 import UserLookupTool from './components/UserLookupTool'
 import StaffManagementTool from './components/StaffManagementTool'
 import {siteSchemaTypes, tourSchemaTypes, userSchemaTypes} from './schemaTypes'
@@ -21,11 +22,12 @@ export default defineConfig([
     basePath: '/content',
     projectId,
     dataset: contentDataset,
+    auth: {loginMethod: 'token'},
     schema: {types: tourSchemaTypes},
     document: {
       actions: (previousActions, context) =>
         context.schemaType === 'tour-to-date'
-          ? [...previousActions, DuplicateTourDateAction]
+          ? [...previousActions, PreviewTourDateAction, DuplicateTourDateAction]
           : previousActions,
     },
     plugins: [
@@ -71,6 +73,7 @@ export default defineConfig([
     basePath: '/site',
     projectId,
     dataset: contentDataset,
+    auth: {loginMethod: 'token'},
     hidden: ({currentUser}) => currentUser !== null && !isSuperAdmin(currentUser),
     schema: {types: siteSchemaTypes},
     tools: (previousTools) => [
@@ -87,7 +90,17 @@ export default defineConfig([
                 .title('Налаштування сайту')
                 .id('siteSettings')
                 .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-              ...S.documentTypeListItems().filter((item) => item.getId() !== 'siteSettings'),
+              ...S.documentTypeListItems()
+                .filter((item) => item.getId() !== 'siteSettings')
+                .map((item) =>
+                  item.getId() === 'review'
+                    ? item.child(
+                        S.documentTypeList('review').defaultOrdering([
+                          {field: '_createdAt', direction: 'desc'},
+                        ]),
+                      )
+                    : item,
+                ),
             ]),
       }),
       visionTool(),
@@ -99,6 +112,7 @@ export default defineConfig([
     basePath: '/users',
     projectId,
     dataset: usersDataset,
+    auth: {loginMethod: 'token'},
     hidden: ({currentUser}) => currentUser !== null && !isSuperAdmin(currentUser),
     schema: {types: userSchemaTypes},
     tools: (previousTools) => [

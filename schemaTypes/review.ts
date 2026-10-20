@@ -7,20 +7,25 @@ export default defineType({
   fields: [
     defineField({
       name: 'name',
-      title: 'Ім\'я',
+      title: "Ім'я",
       type: 'string',
-      validation: rule => rule.required(),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       title: 'Текст відгуку',
       name: 'text',
       type: 'text',
-      validation: rule => rule.required(),
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      title: 'Номер телефону',
+      name: 'phone',
+      type: 'string',
     }),
     defineField({
       title: 'Перевірено',
       name: 'verified',
-      type: 'boolean'
+      type: 'boolean',
     }),
   ],
   preview: {
