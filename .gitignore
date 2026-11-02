@@ -18,6 +18,9 @@
 # Coverage directory used by testing tools
 /coverage
 
+# Local migration backups (full content documents)
+/migration-backups
+
 # Misc
 .DS_Store
 *.pem

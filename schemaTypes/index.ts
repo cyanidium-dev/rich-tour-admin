@@ -1,4 +1,5 @@
 import blockContent from './blockContent'
+import hotelDescription, {hotelVideoFile, hotelYoutube} from './hotelDescription'
 // import category from './category'
 // import post from './post'
 // import author from './author'
@@ -15,7 +16,16 @@ import agentUser from './agentUser'
 import siteSettings from './siteSettings'
 import encryptedUserPayload from './encryptedUserPayload'
 
-export const tourSchemaTypes = [country, tourCategory, tourBasic, tourToDate, blockContent]
+export const tourSchemaTypes = [
+  country,
+  tourCategory,
+  tourBasic,
+  tourToDate,
+  blockContent,
+  hotelDescription,
+  hotelVideoFile,
+  hotelYoutube,
+]
 export const siteSchemaTypes = [siteSettings, review, faq, team, doc, blockContent]
 export const contentSchemaTypes = [
   siteSettings,
@@ -28,6 +38,9 @@ export const contentSchemaTypes = [
   team,
   doc,
   blockContent,
+  hotelDescription,
+  hotelVideoFile,
+  hotelYoutube,
 ]
 export const userSchemaTypes = [encryptedUserPayload, agentUser, agencyUser]
 export const schemaTypes = [...contentSchemaTypes, ...userSchemaTypes]

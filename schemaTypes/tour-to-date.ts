@@ -2,6 +2,8 @@ import {defineField, defineType} from 'sanity';
 
 import { isBlockContentRequired } from './functions';
 import {createTourImageInput, cropFields} from '../components/TourImageInput'
+import {HotelPricesInput, HotelPricesItem} from '../components/HotelPricesInput'
+import {earlyBookingPriceError, earlyBookingUntilError, type TourPrices} from '../components/tourPricing'
 import {
   benefitsPresets,
   costShortPresets,
@@ -54,6 +56,7 @@ export default defineType({
       name: 'price',
       title: 'Базова ціна, €',
       type: 'number',
+      description: 'Звичайна вартість усього туру за одну людину.',
       validation: (Rule) =>
         Rule.required().error('Це поле обов’язкове').min(0).error('Ціна не може бути від’ємною'),
     }),
@@ -110,7 +113,40 @@ export default defineType({
     }),
     defineField({
       name: 'discount',
-      title: 'Діє знижка',
+      title: 'Діє знижка раннього бронювання',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'earlyBookingPrice',
+      title: 'Ціна раннього бронювання, €',
+      type: 'number',
+      description: 'Вартість усього туру за одну людину. Поле необов’язкове.',
+      hidden: ({document}) => !document?.discount,
+      validation: (Rule) => Rule.custom((value, context) =>
+        earlyBookingPriceError(value, context.document?.price, context.document?.discount),
+      ),
+    }),
+    defineField({
+      name: 'earlyBookingUntil',
+      title: 'Раннє бронювання до',
+      type: 'date',
+      options: {dateFormat: 'YYYY-MM-DD'},
+      description: 'Включно. Спільний строк для виїзду та всіх його готелів.',
+      hidden: ({document}) => !document?.discount,
+      validation: (Rule) => Rule.custom((value, context) =>
+        earlyBookingUntilError(value, context.document as TourPrices | undefined),
+      ),
+    }),
+    defineField({
+      name: 'specialPrice',
+      title: 'Спеціальна ціна - special price',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'tourInRecruitment',
+      title: 'Тур в наборі',
       type: 'boolean',
       initialValue: false,
     }),
@@ -311,10 +347,12 @@ export default defineType({
       name: 'hotels',
       title: 'Готелі туру',
       type: 'array',
+      components: {input: HotelPricesInput},
       of: [
         {
           type: 'object',
           title: 'Секція',
+          components: {item: HotelPricesItem},
           fields: [
             {
               name: 'title',
@@ -330,20 +368,42 @@ export default defineType({
             },
             {
               name: 'price',
-              title: 'Вартість оренди (від), €',
+              title: 'Звичайна ціна туру за людину, €',
               type: 'number',
-              validation: (Rule) => Rule.required().positive(),
+              description: 'При додаванні копіюється базова ціна виїзду. Можна змінити окремо.',
+              validation: (Rule) => Rule.required().min(0),
+            },
+            {
+              name: 'earlyBookingPrice',
+              title: 'Ціна раннього бронювання за людину, €',
+              type: 'number',
+              description: 'Діє до спільної дати раннього бронювання виїзду включно.',
+              hidden: ({document}) => !document?.discount,
+              validation: (Rule) => Rule.custom((value, context) =>
+                earlyBookingPriceError(
+                  value,
+                  (context.parent as {price?: number} | undefined)?.price,
+                  context.document?.discount,
+                ),
+              ),
+            },
+            {
+              name: 'placementDescription',
+              title: 'Варіант розміщення',
+              type: 'text',
+              rows: 2,
+              description: 'Необов’язково. Наприклад: проживання в котеджі стандарт.',
             },
             {
               name: 'shortDescription',
               title: 'Короткий опис готелю',
-              type: 'blockContent',
+              type: 'hotelDescription',
               validation: isBlockContentRequired,
             },
             {
               name: 'fullDescription',
               title: 'Детальний опис готелю',
-              type: 'blockContent',
+              type: 'hotelDescription',
               validation: isBlockContentRequired,
             },
             {
